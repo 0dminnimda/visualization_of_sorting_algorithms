@@ -19,6 +19,9 @@ class GameLoop:
     def tick(self) -> None:
         pass
 
+    def is_exit_event(self, event: pg.event.Event) -> bool:
+        return False
+
     def on_event(self, event: pg.event.Event) -> None:
         pass
 
@@ -42,7 +45,10 @@ class GameLoop:
             self.tick()
 
             for event in pg.event.get():
-                self.on_event(event)
+                if self.is_exit_event(event):
+                    self.running = False
+                else:
+                    self.on_event(event)
 
             self.running_check()
 
