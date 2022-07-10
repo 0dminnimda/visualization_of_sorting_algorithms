@@ -61,6 +61,16 @@ class GameLoop:
 
         self.finish()
 
+    def pause(self) -> None:
+        while 1:
+            event = pg.event.wait()
+            if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+                return None
+            elif self.is_exit_event(event):
+                self.running = False
+                return None
+        assert False, "Unreachable"
+
 
 class PygamePainter(GameLoop):
     def __init__(
@@ -228,12 +238,3 @@ class PygamePainter(GameLoop):
 
     def display_info_changed(self) -> bool:
         return self._display_info != pg.display.Info()
-
-    def pause(self) -> bool:
-        while 1:
-            event = pg.event.wait()
-            if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-                return True
-            elif event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
-                return False
-        assert False, "Unreachable"
