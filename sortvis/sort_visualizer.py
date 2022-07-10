@@ -75,11 +75,16 @@ class SortVisualizer(PygamePainter):
         # pg.mixer.music.set_volume(1)
         # pg.mixer.music.play()
 
-    def on_event(self, event) -> None:
+    def is_exit_event(self, event: pg.event.Event) -> bool:
         if event.type == pg.QUIT:
-            self.running = False
-        elif event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
-            self.running = False
+            return True
+        if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            return True
+        return False
+
+    def on_event(self, event) -> None:
+        if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+            self.pause()
 
     def apply_operation(self, op: Operation) -> None:
         if isinstance(op, GetOp):
