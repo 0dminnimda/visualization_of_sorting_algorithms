@@ -68,3 +68,54 @@ class BubbleSort(CocktailShakerSort):
             pass
 
         return self
+
+
+class MergeSort(Sort):
+    num_of_auxiliary_arrays: int = 1
+
+    def sort_array(self, start: Key, end: Key) -> Tuple[int, int]:
+        length = end - start
+        if length < 1:
+            assert False, "Unreachable"
+        if length == 1:
+            return start, end
+        if length == 2:
+            a, b = self.array[start:end]
+            if a > b:
+                self.array[start:end] = [b, a]
+            else:
+                self.array[start:end] = [a, b]
+            return start, end
+        mid = (end - start) // 2 + start
+        s1, e1 = self.sort_array(start, mid)
+        s2, e2 = self.sort_array(mid, end)
+        a, b = self.array[s1], self.array[s2]
+        r = []
+        while 1:
+            if a > b:
+                r.append(b)
+                s2 += 1
+                if not (s2 < e2):
+                    break
+                b = self.array[s2]
+            else:
+                r.append(a)
+                s1 += 1
+                if not (s1 < e1):
+                    break
+                a = self.array[s1]
+        if s1 < e1:
+            assert s2 == e2
+            r.extend(self.array[s1:e1])
+        elif s2 < e2:
+            assert s1 == e1
+            r.extend(self.array[s2:e2])
+        else:
+            print(s1, e1, s2, e2)
+            assert False
+        self.array[start:end] = r
+        return start, end
+
+    def run(self) -> Sort:
+        self.sort_array(0, len(self.array))
+        return self
