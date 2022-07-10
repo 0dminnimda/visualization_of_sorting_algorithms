@@ -14,7 +14,6 @@ __all__ = [
 @dataclass
 class Sort:
     array: RecordedList
-    # auxiliary_arrays: List[RecordedList] = field(default_factory=list)
     num_of_auxiliary_arrays: int = 0
 
     def run(self) -> "Sort":
@@ -79,6 +78,7 @@ class BubbleSort(CocktailShakerSort):
 
 
 class MergeSort(Sort):
+    auxiliary_array: RecordedList
     num_of_auxiliary_arrays: int = 1
 
     def sort_array(self, start: Key, end: Key) -> Tuple[int, int]:
@@ -98,32 +98,35 @@ class MergeSort(Sort):
         s1, e1 = self.sort_array(start, mid)
         s2, e2 = self.sort_array(mid, end)
         a, b = self.array[s1], self.array[s2]
-        r = []
         while 1:
             if a > b:
-                r.append(b)
+                self.auxiliary_array.append(b)
                 s2 += 1
                 if not (s2 < e2):
                     break
                 b = self.array[s2]
             else:
-                r.append(a)
+                self.auxiliary_array.append(a)
                 s1 += 1
                 if not (s1 < e1):
                     break
                 a = self.array[s1]
         if s1 < e1:
             assert s2 == e2
-            r.extend(self.array[s1:e1])
+            for i in range(s1, e1):
+                self.auxiliary_array.append(self.array[i])
         elif s2 < e2:
             assert s1 == e1
-            r.extend(self.array[s2:e2])
+            for i in range(s2, e2):
+                self.auxiliary_array.append(self.array[i])
         else:
-            print(s1, e1, s2, e2)
-            assert False
-        self.array[start:end] = r
+            assert False, f"Unreachable: {s1}, {e1}, {s2}, {e2}"
+        for i in range(start, end):
+            self.array[i] = self.auxiliary_array[i - start]
+        self.auxiliary_array.clear()
         return start, end
 
     def run(self) -> Sort:
+        self.auxiliary_array = RecordedList(parent=self.array)
         self.sort_array(0, len(self.array))
         return self
