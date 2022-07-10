@@ -57,3 +57,14 @@ class CocktailShakerSort(Sort):
             reversed = not reversed
 
         return self
+
+
+class BubbleSort(CocktailShakerSort):
+    def run(self) -> Sort:
+        self.start = 0
+        self.end = len(self.array)
+
+        while self.make_iteration(False):
+            pass
+
+        return self
